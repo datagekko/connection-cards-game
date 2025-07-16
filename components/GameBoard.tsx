@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import type { Question, Player } from '../types';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import type { Question, Player, CustomQuestion, GameState } from '../types';
 import { Card } from './Card';
 import { HeartIcon, RefreshCwIcon } from './icons';
 
@@ -13,6 +13,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({ questions, onRestart }) =>
   const [questionIndex, setQuestionIndex] = useState(-1);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [gameState, setGameState] = useState<GameState>({
+    roundNumber: 0,
+    customQuestions: [],
+    usedCustomQuestions: { 'Player 1': 0, 'Player 2': 0 }
+  });
+  const [showWildCardPrompt, setShowWildCardPrompt] = useState(false);
+  const [customQuestionInput, setCustomQuestionInput] = useState('');
 
   const currentQuestion = useMemo(() => {
     if (questionIndex >= 0 && questionIndex < questions.length) {
@@ -29,6 +36,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ questions, onRestart }) =>
     if (!isFlipped) { // Revealing a new question
       setQuestionIndex(prev => prev + 1);
       setIsFlipped(true);
+      setGameState(prev => ({ ...prev, roundNumber: prev.roundNumber + 1 }));
     } else { // Hiding question, switching player
       setIsFlipped(false);
       // Wait for flip back animation to complete before changing player
@@ -42,18 +50,61 @@ export const GameBoard: React.FC<GameBoardProps> = ({ questions, onRestart }) =>
         setIsTransitioning(false);
     }, 700);
   }, [isFlipped, isTransitioning]);
+
+  // Auto-reveal after round one
+  useEffect(() => {
+    if (gameState.roundNumber > 1 && !isFlipped && !isTransitioning && !isGameOver) {
+      const timer = setTimeout(() => {
+        handleCardClick();
+      }, 1000); // Auto-reveal after 1 second
+      
+      return () => clearTimeout(timer);
+    }
+  }, [gameState.roundNumber, isFlipped, isTransitioning, handleCardClick, isGameOver]);
+
+  const handleWildCard = useCallback(() => {
+    if (gameState.usedCustomQuestions[currentPlayer] >= 3) return;
+    setShowWildCardPrompt(true);
+  }, [gameState.usedCustomQuestions, currentPlayer]);
+
+  const submitCustomQuestion = useCallback(() => {
+    if (customQuestionInput.trim() && gameState.usedCustomQuestions[currentPlayer] < 3) {
+      const newCustomQuestion: CustomQuestion = {
+        id: Date.now().toString(),
+        question: customQuestionInput.trim(),
+        createdBy: currentPlayer
+      };
+      
+      setGameState(prev => ({
+        ...prev,
+        customQuestions: [...prev.customQuestions, newCustomQuestion],
+        usedCustomQuestions: {
+          ...prev.usedCustomQuestions,
+          [currentPlayer]: prev.usedCustomQuestions[currentPlayer] + 1
+        }
+      }));
+      
+      setCustomQuestionInput('');
+      setShowWildCardPrompt(false);
+    }
+  }, [customQuestionInput, currentPlayer, gameState.usedCustomQuestions]);
   
-  const isGameOver = questionIndex >= questions.length;
+  const isGameOver = useMemo(() => questionIndex >= questions.length, [questionIndex, questions.length]);
 
   const cardFront = useMemo(() => {
+    const isAutoReveal = gameState.roundNumber > 1;
     return (
         <div className="text-center p-4">
             <div className="text-5xl mb-4">💌</div>
-            <h3 className="text-3xl font-bold mb-2">Tap to Reveal</h3>
-            <p className="text-slate-500">It's your turn!</p>
+            <h3 className="text-3xl font-bold mb-2">
+              {isAutoReveal ? 'Auto-Revealing...' : 'Tap to Reveal'}
+            </h3>
+            <p className="text-slate-500">
+              {isAutoReveal ? 'Next question coming up!' : "It's your turn!"}
+            </p>
         </div>
     );
-  }, []);
+  }, [gameState.roundNumber]);
 
   const cardBack = useMemo(() => {
     if (isGameOver) {
@@ -99,6 +150,52 @@ export const GameBoard: React.FC<GameBoardProps> = ({ questions, onRestart }) =>
         frontContent={cardFront}
         backContent={cardBack}
       />
+
+      {!isGameOver && (
+        <div className="mt-6 flex flex-col items-center">
+          <button
+            onClick={handleWildCard}
+            disabled={gameState.usedCustomQuestions[currentPlayer] >= 3}
+            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+              gameState.usedCustomQuestions[currentPlayer] >= 3
+                ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+            }`}
+          >
+            Wild Card ({3 - gameState.usedCustomQuestions[currentPlayer]} left)
+          </button>
+        </div>
+      )}
+
+      {showWildCardPrompt && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold mb-4 text-white">Create Your Question</h3>
+            <textarea
+              value={customQuestionInput}
+              onChange={(e) => setCustomQuestionInput(e.target.value)}
+              placeholder="What would you like to ask?"
+              className="w-full p-3 rounded bg-slate-700 text-white border border-slate-600 focus:border-yellow-500 focus:outline-none"
+              rows={3}
+            />
+            <div className="flex justify-end space-x-3 mt-4">
+              <button
+                onClick={() => setShowWildCardPrompt(false)}
+                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitCustomQuestion}
+                disabled={!customQuestionInput.trim()}
+                className="px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                Add Question
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
        <button
         onClick={onRestart}

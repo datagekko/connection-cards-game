@@ -11,6 +11,7 @@ const modeColors: Record<GameMode, string> = {
   'Second Date': 'bg-sky-500 hover:bg-sky-600',
   'Third Date': 'bg-indigo-500 hover:bg-indigo-600',
   'Love Birds': 'bg-pink-500 hover:bg-pink-600',
+  'Friends': 'bg-purple-500 hover:bg-purple-600',
 };
 
 const modeEmojis: Record<GameMode, string> = {
@@ -18,6 +19,7 @@ const modeEmojis: Record<GameMode, string> = {
     'Second Date': '🤔',
     'Third Date': '🔥',
     'Love Birds': '💖',
+    'Friends': '🎉',
 };
 
 export const GameSetup: React.FC<GameSetupProps> = ({ onModeSelect }) => {
@@ -25,7 +27,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onModeSelect }) => {
     <div className="text-center animate-fade-in p-4">
       <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-500">Connection Cards</h1>
       <p className="text-slate-300 mb-12 text-lg max-w-md mx-auto">Choose a deck to start the conversation and deepen your connection.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
         {gameModes.map((mode) => (
           <button
             key={mode}
