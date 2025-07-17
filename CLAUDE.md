@@ -13,6 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **IMPORTANT**: Always create a new branch for feature development. Never work directly on the main branch.
 
+**NOTE**: This guideline was established after initial development. Historical commits may show direct main branch work, but all future development should follow the branching strategy below.
+
 ### Creating a New Feature Branch
 ```bash
 # Create and switch to a new feature branch
@@ -24,9 +26,11 @@ git checkout -b feature/your-feature-name main
 
 ### Common Branch Naming Conventions
 - `feature/session-management` - New features
+- `feature/question-bank-expansion` - Content/question additions
 - `fix/duplicate-questions` - Bug fixes
 - `refactor/question-storage` - Code refactoring
 - `docs/update-readme` - Documentation updates
+- `content/add-new-questions` - Content updates and question additions
 
 ### Development Workflow
 1. **Start New Feature**: `git checkout -b feature/your-feature-name`
@@ -37,6 +41,19 @@ git checkout -b feature/your-feature-name main
 6. **Code Review**: Wait for review and approval
 7. **Merge**: Merge PR into main branch
 8. **Cleanup**: Delete feature branch after merge
+
+### Emergency Hotfixes
+For critical fixes that need immediate deployment:
+```bash
+# Create hotfix branch from main
+git checkout -b hotfix/critical-fix-name main
+
+# Make minimal changes and test
+npm run build
+
+# Push and create PR immediately
+git push -u origin hotfix/critical-fix-name
+```
 
 ### Branch Management Commands
 ```bash
@@ -60,6 +77,33 @@ The application requires a Gemini API key to be set in `.env.local`:
 GEMINI_API_KEY=your_api_key_here
 ```
 
+## Content Management
+
+### Question Bank Structure
+Questions are stored in `constants.ts` and organized by game mode:
+- **First Date**: Light & fun icebreakers (~30 questions)
+- **Second Date**: Slightly deeper prompts (~25 questions)
+- **Third Date**: Emotional and intimate questions (~25 questions)
+- **Love Birds**: For established couples (~30 questions)
+- **Group Mode**: Spicy, humorous & open-ended including "Would You Rather" questions (~60 questions)
+
+### Adding New Questions
+When adding questions to the question bank:
+1. **Create content branch**: `git checkout -b content/add-new-questions`
+2. **Edit constants.ts**: Add questions to appropriate mode section
+3. **Follow question format**:
+   ```typescript
+   { text: "Your question text here?", mode: GameMode.ModeName, type: QuestionType.Question }
+   ```
+4. **Test thoroughly**: Ensure questions appear correctly in all modes
+5. **Build and verify**: Run `npm run build` to check for errors
+
+### Question Guidelines
+- **Be inclusive**: Questions should work for all relationship types
+- **Vary difficulty**: Mix light and deep questions within each mode
+- **Avoid duplicates**: Check existing questions before adding new ones
+- **Consider flow**: Think about question progression and user experience
+
 ## Architecture Overview
 
 This is a React-based connection card game built with TypeScript and Vite. The application helps couples and groups build connections through conversation prompts.
@@ -79,7 +123,7 @@ This is a React-based connection card game built with TypeScript and Vite. The a
 ### Key Features
 
 - **Question Cards** - Each mode has different question sets with varying intimacy levels
-- **Session Management** - Tracks used questions across modes to prevent duplicates within 24-hour sessions
+- **Session Management** - Tracks used questions across modes to prevent duplicates within 24-hour sessions (localStorage-based)
 - **Wildcard System** - Players start with 3 wildcards to replace questions with custom ones
 - **Player Management** - Turn-based system with current player tracking
 - **Visual Feedback** - Card flip animations, confetti effects, and haptic feedback
@@ -114,3 +158,18 @@ The app uses React hooks for state management:
 ### Path Aliases
 
 The project uses `@/*` aliases that resolve to the root directory for cleaner imports.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Session not persisting**: Check browser localStorage - sessions expire after 24 hours
+2. **Questions repeating**: Clear session via the stats panel or localStorage manually
+3. **Build errors**: Ensure all TypeScript types are correct in constants.ts
+4. **Missing API key**: Verify GEMINI_API_KEY is set in .env.local (development only)
+
+### Development Tips
+
+- **Testing question changes**: Clear localStorage to reset session and test new questions
+- **Debugging session state**: Use browser dev tools to inspect localStorage key `connection-cards-session`
+- **Question count verification**: Check SessionStats component for accurate question counts per mode
