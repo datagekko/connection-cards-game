@@ -77,6 +77,28 @@ export const QUESTIONS: Question[] = [
     { text: "Describe a turn-on you haven't shared with me yet.", mode: GameMode.GroupMode, type: QuestionType.Question },
     { text: "What's your favourite time of day for sex?", mode: GameMode.GroupMode, type: QuestionType.Question },
     { text: "Which celebrity would you choose if you had a free pass to sleep with anyone?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    
+    // Would You Rather Questions
+    { text: "Would you rather have the ability to read minds or be invisible?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather have your browser history made public or your bank account balance displayed above your head?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather only be able to whisper or only be able to shout for the rest of your life?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather fight one horse-sized duck or 100 duck-sized horses?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather know the date of your death or the cause of your death?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather have unlimited money but no close relationships, or amazing relationships but always struggle financially?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather always be 10 minutes late or 20 minutes early to everything?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather have to sing everything you say or dance everywhere you go?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    
+    // Rating/Scaling Questions
+    { text: "On a scale of 1-10, how likely are you to survive a horror movie? Explain your strategy.", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Rate everyone in this room from 1-10 on who would make the best reality TV star. Explain why.", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "On a scale of 1-10, how much of a risk-taker are you? Give an example.", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Rate your cooking skills from 1-10. What's the most impressive dish you can make?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "On a scale of 1-10, how good are you at keeping secrets? Has anyone here tested this?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Rate your texting game from 1-10. Are you a quick replier or do you leave people on read?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "On a scale of 1-10, how competitive are you? What brings out your competitive side the most?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Rate your dance moves from 1-10. Show us your signature move!", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "On a scale of 1-10, how likely are you to eat something that fell on the floor? Does the 5-second rule apply?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Rate your ability to lie convincingly from 1-10. Tell us a lie right now and see if we can guess!", mode: GameMode.GroupMode, type: QuestionType.Question },
 ];
 
 export const WILDCARD_QUESTION: Question = {

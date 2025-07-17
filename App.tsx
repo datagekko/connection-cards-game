@@ -1,23 +1,15 @@
 
 import React, { useState, useCallback } from 'react';
 import { GameMode, Question, Player } from './types';
-import { QUESTIONS, WILDCARD_QUESTION, INITIAL_WILDCARDS } from './constants';
+import { WILDCARD_QUESTION, INITIAL_WILDCARDS } from './constants';
+import { useQuestionManager } from './hooks/useQuestionManager';
 import ModeSelectionScreen from './components/ModeSelectionScreen';
 import GameScreen from './components/GameScreen';
 import Confetti from './components/Confetti';
 import PlayerSetupScreen from './components/PlayerSetupScreen';
 
-// Utility function to shuffle an array
-const shuffleArray = <T,>(array: T[]): T[] => {
-  const newArray = [...array];
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-  }
-  return newArray;
-};
-
 const App: React.FC = () => {
+  const questionManager = useQuestionManager();
   const [gameState, setGameState] = useState<'mode-selection' | 'player-setup' | 'in-game'>('mode-selection');
   const [selectedMode, setSelectedMode] = useState<GameMode | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -29,8 +21,8 @@ const App: React.FC = () => {
   const [showConfetti, setShowConfetti] = useState(false);
 
   const startGameWithPlayers = useCallback((mode: GameMode, playersList: Player[]) => {
-    const filteredQuestions = QUESTIONS.filter(q => q.mode === mode);
-    setQuestions(shuffleArray(filteredQuestions));
+    const availableQuestions = questionManager.getAvailableQuestions(mode);
+    setQuestions(availableQuestions);
     setSelectedMode(mode);
     setPlayers(playersList);
     setCurrentQuestionIndex(0);
@@ -43,7 +35,7 @@ const App: React.FC = () => {
     setWildcardCounts(initialCounts);
 
     setGameState('in-game');
-  }, []);
+  }, [questionManager]);
 
   const handleModeSelect = useCallback((mode: GameMode) => {
     setSelectedMode(mode);
@@ -62,9 +54,15 @@ const App: React.FC = () => {
   }, [selectedMode, startGameWithPlayers]);
 
   const handleNextQuestion = useCallback(() => {
+    // Mark current question as used
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion) {
+      questionManager.markQuestionAsUsed(currentQuestion.text);
+    }
+    
     setCurrentQuestionIndex(prevIndex => prevIndex + 1);
     setCurrentPlayerIndex(prevIndex => (prevIndex + 1) % players.length);
-  }, [players.length]);
+  }, [players.length, questions, currentQuestionIndex, questionManager]);
   
   const handleUseWildcard = useCallback(() => {
     const currentPlayer = players[currentPlayerIndex];

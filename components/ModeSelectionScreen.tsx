@@ -1,14 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { GameMode } from '../types';
 import { GAME_MODES } from '../constants';
 import { HeartIcon } from './icons/HeartIcon';
+import { useQuestionManager } from '../hooks/useQuestionManager';
+import SessionStats from './SessionStats';
 
 interface ModeSelectionScreenProps {
   onModeSelect: (mode: GameMode) => void;
 }
 
 const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect }) => {
+  const questionManager = useQuestionManager();
+  const [showStats, setShowStats] = useState(false);
+  const sessionStats = questionManager.getSessionStats();
+  
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-gray-900 to-black">
       <div className="text-center mb-10">
@@ -17,7 +23,30 @@ const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect 
           Connection Cards
         </h1>
         <p className="text-slate-400 mt-2 text-lg">Choose a mode to begin</p>
+        
+        {sessionStats.used > 0 && (
+          <div className="mt-4">
+            <button
+              onClick={() => setShowStats(!showStats)}
+              className="text-white/60 hover:text-white text-sm underline"
+            >
+              {sessionStats.used} questions used this session
+            </button>
+          </div>
+        )}
       </div>
+      
+      {showStats && (
+        <div className="w-full max-w-md mb-6">
+          <SessionStats
+            stats={sessionStats}
+            onClearSession={() => {
+              questionManager.clearSession();
+              setShowStats(false);
+            }}
+          />
+        </div>
+      )}
 
       <div className="w-full max-w-md space-y-4">
         {GAME_MODES.map(({ mode, description }) => {
@@ -52,9 +81,9 @@ const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect 
             )
         })}
       </div>
-       <footer className="text-center mt-12 text-slate-500 text-sm">
-            <p>Built for connection.</p>
-        </footer>
+      <footer className="text-center mt-12 text-slate-500 text-sm">
+        <p>Built for connection.</p>
+      </footer>
     </div>
   );
 };
