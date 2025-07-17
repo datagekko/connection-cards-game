@@ -156,9 +156,9 @@ export const ALL_QUESTIONS: Question[] = [
   { question: "Would you rather be able to speak all languages fluently or be able to talk to animals?", mode: "Friends" },
   { question: "Would you rather have unlimited money but no free time, or unlimited free time but no money?", mode: "Friends" },
   { question: "Would you rather always be slightly too hot or slightly too cold?", mode: "Friends" },
-  { question: "Rank these in order of importance to you: career success, close friendships, romantic love, personal hobbies.", mode: "Friends" },
-  { question: "Rank these superpowers from most to least desirable: mind reading, time travel, super strength, teleportation.", mode: "Friends" },
-  { question: "Rank these vacation types: beach resort, mountain cabin, city exploration, adventure camping.", mode: "Friends" },
-  { question: "Rank these qualities in a friend: loyalty, humor, intelligence, reliability.", mode: "Friends" },
-  { question: "Rank these decades you'd want to live in: 1960s, 1980s, 1990s, 2000s.", mode: "Friends" }
+  { question: "On a scale of 1-10, how much do you trust your gut instincts?", mode: "Friends" },
+  { question: "Rate your cooking skills on a scale of 1-10, where 1 is 'burns water' and 10 is 'Gordon Ramsay'.", mode: "Friends" },
+  { question: "On a scale of 1-10, how likely are you to cry during a sad movie?", mode: "Friends" },
+  { question: "Rate your dancing skills from 1-10, where 1 is 'two left feet' and 10 is 'TikTok famous'.", mode: "Friends" },
+  { question: "On a scale of 1-10, how much of a morning person are you?", mode: "Friends" }
 ];
