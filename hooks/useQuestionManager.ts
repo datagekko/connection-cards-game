@@ -21,6 +21,30 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return newArray;
 };
 
+// A curated list of light, funny icebreaker questions for the First Date mode. These should always
+// appear at the beginning of a new First Date session to help break the ice before any deeper
+// or more sexual prompts are shown.
+const FIRST_DATE_ICEBREAKER_QUESTIONS: string[] = [
+  "Would you rather go on a great date with someone who disappears or a boring date with someone who won’t stop texting you?",
+  "What's your spirit animal? Why?",
+  "You can delete one dating behavior from the planet. What vanishes?",
+  "Is there a song that immediately lifts your mood? Which one?",
+  "If there was a Google review for dating you, what would it say?",
+];
+
+// Ensure that the first five questions for the First Date mode are always the light ice-breakers
+// defined above. The rest of the questions are shuffled and appended afterwards.
+const ensureIcebreakersFirst = (questions: Question[]): Question[] => {
+  const icebreakers = questions.filter(q => FIRST_DATE_ICEBREAKER_QUESTIONS.includes(q.text));
+  const others = questions.filter(q => !FIRST_DATE_ICEBREAKER_QUESTIONS.includes(q.text));
+
+  // In case fewer than five icebreakers are available (e.g. they were all used), fall back to
+  // whatever icebreakers remain and proceed with the rest.
+  const selectedIcebreakers = shuffleArray(icebreakers).slice(0, 5);
+
+  return [...selectedIcebreakers, ...shuffleArray(others)];
+};
+
 export const useQuestionManager = () => {
   const [session, setSession] = useState<QuestionSession>(() => {
     // Initialize or load session from localStorage
@@ -73,6 +97,10 @@ export const useQuestionManager = () => {
       return shuffleArray(modeQuestions);
     }
     
+    if (mode === GameMode.FirstDate) {
+      return ensureIcebreakersFirst(availableQuestions);
+    }
+
     return shuffleArray(availableQuestions);
   }, [session.usedQuestions]);
 

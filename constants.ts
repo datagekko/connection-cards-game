@@ -13,6 +13,7 @@ export const QUESTIONS: Question[] = [
     // First Date
     { text: "How long do you know your best friend?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What's one thing that instantly makes you feel a connection with someone?", mode: GameMode.FirstDate, type: QuestionType.Question },
+    { text: "Would you rather have amazing physical chemistry but zero music taste compatibility, or the other way around?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What's your spirit animal? Why?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What's your favourite meal? Why?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "Which book has impacted your life the most?", mode: GameMode.FirstDate, type: QuestionType.Question },
@@ -33,12 +34,17 @@ export const QUESTIONS: Question[] = [
     { text: "If you could change anything about your upbringing, what would it be?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What are you most grateful for in your life?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What are three things you believe we have in common?", mode: GameMode.FirstDate, type: QuestionType.Question },
-    { text: "Do you have a secret hunch about how you will die?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "Describe your idea of a perfect day.", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "Would you want to be famous, and if so, in what way?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "On a scale of 1 to 10, how would you rate yourself?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "If you received €10,000, how would you spend it?", mode: GameMode.FirstDate, type: QuestionType.Question },
-    
+
+    // Newly added First Date icebreakers
+    { text: "What’s something weirdly specific that turns you on?", mode: GameMode.FirstDate, type: QuestionType.Question },
+    { text: "What’s more attractive to you: ambition or kindness?", mode: GameMode.FirstDate, type: QuestionType.Question },
+    { text: "What food would immediately make you leave a date if I ordered it?", mode: GameMode.FirstDate, type: QuestionType.Question },
+    { text: "If your life had background music, what song would be playing right now?", mode: GameMode.FirstDate, type: QuestionType.Question },
+
     // Second Date
     { text: "What's a deeply held dream you have?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What does your five year plan look like?", mode: GameMode.SecondDate, type: QuestionType.Question },
@@ -134,7 +140,16 @@ export const QUESTIONS: Question[] = [
     { text: "What's a secret you've never told anyone here?", mode: GameMode.GroupMode, type: QuestionType.Question },
     { text: "What's the most illegal thing you've ever done?", mode: GameMode.GroupMode, type: QuestionType.Question },
     { text: "Who in this room would survive the longest in a zombie apocalypse?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    
+
+    // Newly added Friends Mode questions
+    { text: "What’s the most petty reason you’ve ever ghosted someone?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "You get one free slap - who and why?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "What’s a red flag you’re weirdly into?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "What would you never admit on your main instagram but lowkey want to share?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Who here would you trust to wingman you - and who absolutely not?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Who here would soft launch someone after one good date?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Who’s most likely to have a secret situationship no one knows about?", mode: GameMode.GroupMode, type: QuestionType.Question },
+ 
     // Would You Rather Questions
     { text: "Would you rather have the ability to read minds or be invisible?", mode: GameMode.GroupMode, type: QuestionType.Question },
     { text: "Would you rather have your browser history made public or your bank account balance displayed above your head?", mode: GameMode.GroupMode, type: QuestionType.Question },
