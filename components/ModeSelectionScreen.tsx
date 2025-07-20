@@ -82,7 +82,17 @@ const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect 
         })}
       </div>
       <footer className="text-center mt-12 text-slate-500 text-sm">
-        <p>Built for connection.</p>
+        <p>
+          Built for connection.{' '}
+          <a
+            href="https://x.com/kiliandreher"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-slate-300"
+          >
+            Made with love by Kilian.
+          </a>
+        </p>
       </footer>
     </div>
   );
