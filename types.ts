@@ -4,7 +4,7 @@ export enum GameMode {
   SecondDate = 'Second Date',
   ThirdDate = 'Third Date',
   LoveBirds = 'Love Birds',
-  GroupMode = 'Group Mode',
+  GroupMode = 'Friends Mode',
 }
 
 export enum QuestionType {
