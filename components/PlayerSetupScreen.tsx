@@ -1,15 +1,30 @@
 
 import React, { useState, useMemo } from 'react';
-import { Player } from '../types';
+import { Player, SessionConfig, SessionMood, CustomQuestion } from '../types';
+import MoodSelector from './MoodSelector';
+import CustomQuestionModal from './CustomQuestionModal';
 
 interface PlayerSetupScreenProps {
   initialPlayers: Player[];
-  onStartGame: (players: Player[]) => void;
+  onStartGame: (players: Player[], config: SessionConfig) => void;
   onBack: () => void;
+  onAddCustomQuestion?: (question: Omit<CustomQuestion, 'id' | 'createdAt'>) => void;
+  customQuestionsCount?: number;
 }
 
-const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ initialPlayers, onStartGame, onBack }) => {
+const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ 
+  initialPlayers, 
+  onStartGame, 
+  onBack, 
+  onAddCustomQuestion,
+  customQuestionsCount = 0
+}) => {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
+  const [sessionConfig, setSessionConfig] = useState<SessionConfig>({
+    mood: SessionMood.Chill,
+    intensity: 5
+  });
+  const [showCustomQuestionModal, setShowCustomQuestionModal] = useState(false);
 
   const handlePlayerNameChange = (id: number, name: string) => {
     setPlayers(currentPlayers => currentPlayers.map(p => p.id === id ? { ...p, name } : p));
@@ -32,7 +47,7 @@ const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ initialPlayers, o
   const handleStart = () => {
     const validPlayers = players.filter(p => p.name.trim().length > 0);
     if (validPlayers.length >= 2) {
-      onStartGame(validPlayers);
+      onStartGame(validPlayers, sessionConfig);
     }
   };
 
@@ -77,6 +92,11 @@ const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ initialPlayers, o
           ))}
         </div>
         
+        <MoodSelector 
+          selectedMood={sessionConfig.mood}
+          onMoodChange={(mood) => setSessionConfig(prev => ({...prev, mood}))}
+        />
+        
         <div className="flex flex-col space-y-4">
           <button 
             onClick={handleAddPlayer} 
@@ -84,6 +104,15 @@ const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ initialPlayers, o
             >
             + Add Player
           </button>
+          
+          {onAddCustomQuestion && (
+            <button 
+              onClick={() => setShowCustomQuestionModal(true)}
+              className="w-full text-center p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 transition text-purple-300"
+            >
+              + Add Custom Question {customQuestionsCount > 0 && `(${customQuestionsCount} added)`}
+            </button>
+          )}
           
           <button 
             onClick={handleStart} 
@@ -93,6 +122,18 @@ const PlayerSetupScreen: React.FC<PlayerSetupScreenProps> = ({ initialPlayers, o
             Start Game ({players.length} players)
           </button>
         </div>
+        
+        {showCustomQuestionModal && onAddCustomQuestion && (
+          <CustomQuestionModal
+            isOpen={showCustomQuestionModal}
+            onClose={() => setShowCustomQuestionModal(false)}
+            onSubmit={(question) => {
+              onAddCustomQuestion(question);
+              setShowCustomQuestionModal(false);
+            }}
+            currentPlayer={players[0]} // Use first player as default author
+          />
+        )}
       </div>
     </div>
   );

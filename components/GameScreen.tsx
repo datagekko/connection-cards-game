@@ -1,9 +1,12 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { GameMode, Player, Question, QuestionType } from '../types';
+import { GameMode, Player, Question, QuestionType, SessionConfig, SessionEnergy, PlayerRequest } from '../types';
 import Card from './Card';
 import PlayerDisplay from './PlayerDisplay';
 import WildcardDisplay from './WildcardDisplay';
+import EnergyIndicator from './EnergyIndicator';
+import TopicRequestModal from './TopicRequestModal';
+import ActiveRequestsDisplay from './ActiveRequestsDisplay';
 
 interface GameScreenProps {
   gameMode: GameMode;
@@ -11,9 +14,15 @@ interface GameScreenProps {
   currentPlayer: Player;
   players: Player[];
   wildcardCounts: { [key: number]: number };
+  sessionConfig?: SessionConfig;
+  sessionEnergy?: SessionEnergy;
+  activeRequests?: PlayerRequest[];
   onNextQuestion: () => void;
   onUseWildcard: () => void;
   onReset: () => void;
+  onEnergyOverride?: (newLevel: number) => void;
+  onAddRequest?: (request: Omit<PlayerRequest, 'id' | 'createdAt' | 'fulfilled'>) => void;
+  onFulfillRequest?: (requestId: string) => void;
 }
 
 const GameScreen: React.FC<GameScreenProps> = ({
@@ -22,13 +31,20 @@ const GameScreen: React.FC<GameScreenProps> = ({
   currentPlayer,
   players,
   wildcardCounts,
+  sessionConfig,
+  sessionEnergy,
+  activeRequests = [],
   onNextQuestion,
   onUseWildcard,
-  onReset
+  onReset,
+  onEnergyOverride,
+  onAddRequest,
+  onFulfillRequest
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isInitialFlip, setIsInitialFlip] = useState(true);
+  const [showRequestModal, setShowRequestModal] = useState(false);
 
   const handleFlip = useCallback(() => {
     if (isAnimating || !question) return;
@@ -73,9 +89,26 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-between p-4 sm:p-8">
-      <header className="w-full max-w-2xl flex justify-between items-center">
-        <button onClick={onReset} className="text-slate-400 hover:text-white transition-colors">&larr; Change Mode</button>
-        <div className="px-3 py-1 bg-white/10 rounded-full text-sm font-medium">{gameMode}</div>
+      <header className="w-full max-w-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={onReset} className="text-slate-400 hover:text-white transition-colors">&larr; Change Mode</button>
+          <div className="flex items-center space-x-4">
+            {sessionConfig && (
+              <div className="px-3 py-1 bg-purple-500/20 rounded-full text-sm font-medium text-purple-300">
+                {sessionConfig.mood} Mode
+              </div>
+            )}
+            <div className="px-3 py-1 bg-white/10 rounded-full text-sm font-medium">{gameMode}</div>
+          </div>
+        </div>
+        {sessionEnergy && (
+          <div className="flex justify-center">
+            <EnergyIndicator 
+              sessionEnergy={sessionEnergy} 
+              onEnergyOverride={onEnergyOverride}
+            />
+          </div>
+        )}
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center w-full">
@@ -88,13 +121,52 @@ const GameScreen: React.FC<GameScreenProps> = ({
         />
       </main>
 
-      <footer className="w-full max-w-md h-20 flex items-center justify-center">
-        <WildcardDisplay
-            count={wildcardCounts[currentPlayer.id]}
-            onUse={onUseWildcard}
-            disabled={!canUseWildcard}
-        />
+      {/* Active Requests Display */}
+      {activeRequests.length > 0 && (
+        <div className="w-full max-w-md mb-4">
+          <ActiveRequestsDisplay 
+            requests={activeRequests}
+            players={players}
+            onFulfillRequest={onFulfillRequest}
+          />
+        </div>
+      )}
+
+      <footer className="w-full max-w-md space-y-4">
+        {/* Request Topic Button */}
+        {onAddRequest && gameMode === GameMode.GroupMode && (
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowRequestModal(true)}
+              className="px-6 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 text-pink-300 rounded-lg hover:from-pink-500/30 hover:to-purple-500/30 transition-all text-sm font-medium"
+            >
+              💫 Request a Topic
+            </button>
+          </div>
+        )}
+        
+        {/* Wildcard Display */}
+        <div className="flex items-center justify-center h-20">
+          <WildcardDisplay
+              count={wildcardCounts[currentPlayer.id]}
+              onUse={onUseWildcard}
+              disabled={!canUseWildcard}
+          />
+        </div>
       </footer>
+
+      {/* Topic Request Modal */}
+      {showRequestModal && onAddRequest && (
+        <TopicRequestModal
+          isOpen={showRequestModal}
+          onClose={() => setShowRequestModal(false)}
+          onSubmit={(request) => {
+            onAddRequest(request);
+            setShowRequestModal(false);
+          }}
+          currentPlayer={currentPlayer}
+        />
+      )}
     </div>
   );
 };

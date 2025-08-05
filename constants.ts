@@ -1,5 +1,5 @@
 
-import { GameMode, Question, QuestionType } from './types';
+import { GameMode, Question, QuestionType, SessionMood, RelationshipType, RequestTopic } from './types';
 
 export const GAME_MODES: { mode: GameMode, description: string }[] = [
     { mode: GameMode.FirstDate, description: "Light & fun icebreakers" },
@@ -8,6 +8,57 @@ export const GAME_MODES: { mode: GameMode, description: string }[] = [
     { mode: GameMode.LoveBirds, description: "For established couples" },
     { mode: GameMode.GroupMode, description: "Spicy, humorous & open-ended" },
 ];
+
+// Enhanced configuration constants
+export const TOPIC_KEYWORDS: Record<RequestTopic, string[]> = {
+  [RequestTopic.Love]: ['love', 'relationship', 'partner', 'dating', 'romance', 'crush'],
+  [RequestTopic.Career]: ['work', 'job', 'career', 'ambition', 'goal', 'professional'],
+  [RequestTopic.Family]: ['family', 'parent', 'sibling', 'childhood', 'home'],
+  [RequestTopic.Dreams]: ['dream', 'aspiration', 'hope', 'future', 'wish'],
+  [RequestTopic.Fears]: ['fear', 'scary', 'afraid', 'insecurity', 'worry'],
+  [RequestTopic.Fun]: ['fun', 'hobby', 'entertainment', 'enjoy', 'favorite'],
+  [RequestTopic.Deep]: ['meaning', 'purpose', 'believe', 'value', 'philosophy'],
+  [RequestTopic.Secrets]: ['secret', 'never told', 'confession', 'hidden']
+};
+
+export const TOPIC_EMOJIS: Record<RequestTopic, string> = {
+  [RequestTopic.Love]: '💕',
+  [RequestTopic.Career]: '💼', 
+  [RequestTopic.Family]: '👨‍👩‍👧‍👦',
+  [RequestTopic.Dreams]: '✨',
+  [RequestTopic.Fears]: '😰',
+  [RequestTopic.Fun]: '🎉',
+  [RequestTopic.Deep]: '🤔',
+  [RequestTopic.Secrets]: '🤫'
+};
+
+export const HOT_SEAT_CONFIG = {
+  DEFAULT_TIME_LIMIT: 30,
+  MIN_QUESTIONS: 5,
+  MAX_QUESTIONS: 15,
+  RAPID_FIRE_DELAY: 2000
+};
+
+export const ENERGY_CONFIG = {
+  UPDATE_INTERVAL: 30000,
+  FACTORS: {
+    TIME_OF_DAY_WEIGHT: 0.2,
+    SESSION_LENGTH_WEIGHT: 0.3,
+    INTERACTION_RATE_WEIGHT: 0.3,
+    ENGAGEMENT_WEIGHT: 0.2
+  },
+  THRESHOLDS: {
+    LOW_ENERGY: 3,
+    MEDIUM_ENERGY: 6,
+    HIGH_ENERGY: 8
+  }
+};
+
+export const ENERGY_QUESTION_MAPPING = {
+  LOW: { maxIntimacy: 4, preferredMoods: [SessionMood.Chill] },
+  MEDIUM: { maxIntimacy: 7, preferredMoods: [SessionMood.Chill, SessionMood.Deep] },
+  HIGH: { maxIntimacy: 10, preferredMoods: [SessionMood.Wild, SessionMood.Funny] }
+};
 
 export const QUESTIONS: Question[] = [
     // First Date

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { GameMode, Question } from '../types';
-import { QUESTIONS } from '../constants';
+import { GameMode, Question, SessionConfig, SessionMood, CustomQuestion } from '../types';
+import { QUESTIONS, ENERGY_QUESTION_MAPPING } from '../constants';
 
 interface QuestionSession {
   usedQuestions: Set<string>;
@@ -45,7 +45,54 @@ const ensureIcebreakersFirst = (questions: Question[]): Question[] => {
   return [...selectedIcebreakers, ...shuffleArray(others)];
 };
 
-export const useQuestionManager = () => {
+// Helper function to apply mood filtering to questions
+const applyMoodFilter = (questions: Question[], mood: SessionMood): Question[] => {
+  return questions.filter(question => {
+    // For now, use simple keyword matching - can be enhanced with ML later
+    const text = question.text.toLowerCase();
+    
+    switch (mood) {
+      case SessionMood.Chill:
+        return !text.includes('crazy') && !text.includes('wild') && !text.includes('insane');
+      case SessionMood.Deep:
+        return text.includes('feel') || text.includes('think') || text.includes('believe') || 
+               text.includes('value') || text.includes('meaning') || text.includes('life');
+      case SessionMood.Wild:
+        return text.includes('dare') || text.includes('crazy') || text.includes('wild') || 
+               text.includes('never') || text.includes('boldest');
+      case SessionMood.Funny:
+        return text.includes('weird') || text.includes('funny') || text.includes('ridiculous') ||
+               text.includes('embarrassing') || text.includes('hilarious');
+      default:
+        return true;
+    }
+  });
+};
+
+// Helper function to apply energy-based filtering to questions
+const applyEnergyFilter = (questions: Question[], energyLevel: number): Question[] => {
+  return questions.filter(question => {
+    const questionEnergy = getQuestionEnergyRequirement(question);
+    // Match questions to energy level (±2 tolerance)
+    return Math.abs(questionEnergy - energyLevel) <= 2;
+  });
+};
+
+// Helper function to calculate question energy requirement
+const getQuestionEnergyRequirement = (question: Question): number => {
+  let energy = 5; // Default
+  const text = question.text.toLowerCase();
+  
+  // Adjust based on question characteristics
+  if (text.length > 100) energy += 1; // Long questions need focus
+  if (text.includes('wild') || text.includes('crazy') || text.includes('dare')) energy += 2;
+  if (text.includes('chill') || text.includes('relax') || text.includes('simple')) energy -= 1;
+  if (text.includes('deep') || text.includes('meaning') || text.includes('philosophy')) energy += 1;
+  
+  return Math.max(1, Math.min(10, energy));
+};
+
+export const useQuestionManager = (customQuestions: CustomQuestion[] = []) => {
   const [session, setSession] = useState<QuestionSession>(() => {
     // Initialize or load session from localStorage
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -85,10 +132,30 @@ export const useQuestionManager = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData));
   }, [session]);
 
-  const getAvailableQuestions = useCallback((mode: GameMode): Question[] => {
+  const getAvailableQuestions = useCallback((mode: GameMode, config?: SessionConfig, energyLevel?: number): Question[] => {
+    // Combine regular questions with approved custom questions
+    const approvedCustomQuestions = customQuestions.filter(q => q.approved);
+    const allQuestions = [...QUESTIONS, ...approvedCustomQuestions];
+    
     // Filter questions by mode and exclude used ones
-    const modeQuestions = QUESTIONS.filter(q => q.mode === mode);
-    const availableQuestions = modeQuestions.filter(q => !session.usedQuestions.has(q.text));
+    const modeQuestions = allQuestions.filter(q => q.mode === mode);
+    let availableQuestions = modeQuestions.filter(q => !session.usedQuestions.has(q.text));
+    
+    // Apply mood filtering if config is provided
+    if (config?.mood && availableQuestions.length > 5) {
+      const moodFiltered = applyMoodFilter(availableQuestions, config.mood);
+      if (moodFiltered.length > 0) {
+        availableQuestions = moodFiltered;
+      }
+    }
+    
+    // Apply energy filtering if energy level is provided
+    if (energyLevel && availableQuestions.length > 5) {
+      const energyFiltered = applyEnergyFilter(availableQuestions, energyLevel);
+      if (energyFiltered.length > 0) {
+        availableQuestions = energyFiltered;
+      }
+    }
     
     // If no questions available for this mode, return all mode questions
     // This prevents the app from breaking when all questions are exhausted
@@ -102,7 +169,7 @@ export const useQuestionManager = () => {
     }
 
     return shuffleArray(availableQuestions);
-  }, [session.usedQuestions]);
+  }, [session.usedQuestions, customQuestions]);
 
   const markQuestionAsUsed = useCallback((questionText: string) => {
     setSession(prev => ({
@@ -112,12 +179,14 @@ export const useQuestionManager = () => {
   }, []);
 
   const getSessionStats = useCallback(() => {
-    const totalQuestions = QUESTIONS.length;
+    const approvedCustomQuestions = customQuestions.filter(q => q.approved);
+    const allQuestions = [...QUESTIONS, ...approvedCustomQuestions];
+    const totalQuestions = allQuestions.length;
     const usedCount = session.usedQuestions.size;
     const remainingCount = totalQuestions - usedCount;
     
     const modeStats = Object.values(GameMode).map(mode => {
-      const modeQuestions = QUESTIONS.filter(q => q.mode === mode);
+      const modeQuestions = allQuestions.filter(q => q.mode === mode);
       const usedInMode = modeQuestions.filter(q => session.usedQuestions.has(q.text)).length;
       const remainingInMode = modeQuestions.length - usedInMode;
       
@@ -135,9 +204,10 @@ export const useQuestionManager = () => {
       remaining: remainingCount,
       sessionId: session.sessionId,
       startTime: session.startTime,
-      modeStats
+      modeStats,
+      customQuestionsCount: approvedCustomQuestions.length
     };
-  }, [session]);
+  }, [session, customQuestions]);
 
   const clearSession = useCallback(() => {
     const newSession = {
