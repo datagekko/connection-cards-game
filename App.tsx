@@ -5,12 +5,15 @@ import { WILDCARD_QUESTION, INITIAL_WILDCARDS } from './constants';
 import { useQuestionManager } from './hooks/useQuestionManager';
 import { useEnergyLevel } from './hooks/useEnergyLevel';
 import { useCustomQuestions } from './hooks/useCustomQuestions';
+import useExitIntent from './hooks/useExitIntent';
 import ModeSelectionScreen from './components/ModeSelectionScreen';
 import GameScreen from './components/GameScreen';
 import Confetti from './components/Confetti';
 import PlayerSetupScreen from './components/PlayerSetupScreen';
+import ExitIntentModal from './components/ExitIntentModal';
 
 const App: React.FC = () => {
+  const { showModal, setShowModal } = useExitIntent();
   const customQuestionsManager = useCustomQuestions();
   const questionManager = useQuestionManager(customQuestionsManager.customQuestions);
   const [gameState, setGameState] = useState<'mode-selection' | 'player-setup' | 'in-game'>('mode-selection');
@@ -155,6 +158,7 @@ const App: React.FC = () => {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {showConfetti && <Confetti />}
+      <ExitIntentModal show={showModal} onClose={() => setShowModal(false)} />
       <GameScreen
         key={selectedMode}
         gameMode={selectedMode}

@@ -1,5 +1,6 @@
 
-import React, { useState, useCallback } from 'react';
+import * as React from 'react';
+import { useState, useCallback } from 'react';
 import { GameMode, Player, Question, QuestionType, SessionConfig, SessionEnergy } from '../types';
 import Card from './Card';
 import PlayerDisplay from './PlayerDisplay';
@@ -32,7 +33,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   onUseWildcard,
   onReset,
   onEnergyOverride
-}) => {
+}: GameScreenProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isInitialFlip, setIsInitialFlip] = useState(true);
@@ -64,14 +65,30 @@ const GameScreen: React.FC<GameScreenProps> = ({
   if (!question) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center text-center p-4">
-        <h2 className="text-3xl font-bold text-white mb-4">You've finished all the cards!</h2>
-        <p className="text-slate-400 mb-8">Hope you learned something new.</p>
-        <button
-          onClick={onReset}
-          className="px-6 py-3 bg-pink-600 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 transition-colors"
-        >
-          Play Again
-        </button>
+        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 max-w-md mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-3">
+            Do you enjoy this game?
+          </h2>
+          <p className="text-slate-300 mb-6">
+            Dig deeper with journaling, a powerful tool to reflect and understand yourself.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://myjournalto.com/products/guided-journal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-pink-600 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 transition-all duration-300 transform hover:scale-105"
+            >
+              Try Journaling
+            </a>
+            <button
+              onClick={onReset}
+              className="px-6 py-3 bg-slate-700 text-white font-semibold rounded-lg shadow-md hover:bg-slate-600 transition-colors"
+            >
+              Play Again
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
