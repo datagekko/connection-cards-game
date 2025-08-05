@@ -47,8 +47,18 @@ const ensureIcebreakersFirst = (questions: Question[]): Question[] => {
 
 // Helper function to apply mood filtering to questions
 const applyMoodFilter = (questions: Question[], mood: SessionMood): Question[] => {
+  // If "All Questions" mood is selected, return all questions without filtering
+  if (mood === SessionMood.All) {
+    return questions;
+  }
+  
   return questions.filter(question => {
-    // For now, use simple keyword matching - can be enhanced with ML later
+    // Use explicit moodTags if available (new system)
+    if (question.moodTags && question.moodTags.length > 0) {
+      return question.moodTags.includes(mood);
+    }
+    
+    // Fallback to keyword matching for questions without moodTags (legacy)
     const text = question.text.toLowerCase();
     
     switch (mood) {

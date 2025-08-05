@@ -139,7 +139,7 @@ const App: React.FC = () => {
   const currentPlayer = players[currentPlayerIndex];
 
   if (gameState === 'mode-selection' || !selectedMode) {
-    return <ModeSelectionScreen onModeSelect={handleModeSelect} />;
+    return <ModeSelectionScreen onModeSelect={handleModeSelect} questionManager={questionManager} />;
   }
 
   if (gameState === 'player-setup') {

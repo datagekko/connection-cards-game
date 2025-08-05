@@ -60,6 +60,7 @@ const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
       case SessionMood.Deep: return 'from-purple-600 to-indigo-500';
       case SessionMood.Wild: return 'from-red-500 to-orange-400';
       case SessionMood.Funny: return 'from-yellow-500 to-pink-400';
+      case SessionMood.All: return 'from-gray-600 to-slate-500';
     }
   };
 
@@ -69,6 +70,7 @@ const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
       case SessionMood.Deep: return '🤔';
       case SessionMood.Wild: return '🔥';
       case SessionMood.Funny: return '😂';
+      case SessionMood.All: return '🎯';
     }
   };
 

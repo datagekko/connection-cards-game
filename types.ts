@@ -16,7 +16,8 @@ export enum SessionMood {
   Chill = 'Chill',
   Deep = 'Deep', 
   Wild = 'Wild',
-  Funny = 'Funny'
+  Funny = 'Funny',
+  All = 'All Questions'
 }
 
 export enum GameplayMode {
