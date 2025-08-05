@@ -5,7 +5,6 @@ import { WILDCARD_QUESTION, INITIAL_WILDCARDS } from './constants';
 import { useQuestionManager } from './hooks/useQuestionManager';
 import { useEnergyLevel } from './hooks/useEnergyLevel';
 import { useCustomQuestions } from './hooks/useCustomQuestions';
-import { usePlayerRequests } from './hooks/usePlayerRequests';
 import ModeSelectionScreen from './components/ModeSelectionScreen';
 import GameScreen from './components/GameScreen';
 import Confetti from './components/Confetti';
@@ -13,7 +12,6 @@ import PlayerSetupScreen from './components/PlayerSetupScreen';
 
 const App: React.FC = () => {
   const customQuestionsManager = useCustomQuestions();
-  const playerRequestsManager = usePlayerRequests();
   const questionManager = useQuestionManager(customQuestionsManager.customQuestions);
   const [gameState, setGameState] = useState<'mode-selection' | 'player-setup' | 'in-game'>('mode-selection');
   const [selectedMode, setSelectedMode] = useState<GameMode | null>(null);
@@ -166,21 +164,10 @@ const App: React.FC = () => {
         wildcardCounts={wildcardCounts}
         sessionConfig={sessionConfig}
         sessionEnergy={energyManager.sessionEnergy}
-        activeRequests={playerRequestsManager.getActiveRequests()}
         onNextQuestion={handleNextQuestion}
         onUseWildcard={handleUseWildcard}
         onReset={resetGame}
         onEnergyOverride={energyManager.overrideEnergyLevel}
-        onAddRequest={playerRequestsManager.addRequest}
-        onFulfillRequest={(requestId) => {
-          playerRequestsManager.fulfillRequest(requestId);
-          // Optionally trigger a question based on the request
-          const request = playerRequestsManager.requests.find(r => r.id === requestId);
-          if (request) {
-            // This could trigger a special question generation based on the request topic
-            console.log(`Fulfilled request for ${request.topic}`);
-          }
-        }}
       />
     </div>
   );
