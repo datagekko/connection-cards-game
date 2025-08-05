@@ -1,17 +1,17 @@
 
 import React, { useState } from 'react';
 import { GameMode } from '../types';
+import { useQuestionManager } from '../hooks/useQuestionManager';
 import { GAME_MODES } from '../constants';
 import { HeartIcon } from './icons/HeartIcon';
-import { useQuestionManager } from '../hooks/useQuestionManager';
 import SessionStats from './SessionStats';
 
 interface ModeSelectionScreenProps {
   onModeSelect: (mode: GameMode) => void;
+  questionManager: ReturnType<typeof useQuestionManager>;
 }
 
-const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect }) => {
-  const questionManager = useQuestionManager();
+const ModeSelectionScreen: React.FC<ModeSelectionScreenProps> = ({ onModeSelect, questionManager }) => {
   const [showStats, setShowStats] = useState(false);
   const sessionStats = questionManager.getSessionStats();
   

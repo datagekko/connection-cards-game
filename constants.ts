@@ -1,5 +1,5 @@
 
-import { GameMode, Question, QuestionType } from './types';
+import { GameMode, Question, QuestionType, SessionMood, RelationshipType, RequestTopic } from './types';
 
 export const GAME_MODES: { mode: GameMode, description: string }[] = [
     { mode: GameMode.FirstDate, description: "Light & fun icebreakers" },
@@ -8,6 +8,57 @@ export const GAME_MODES: { mode: GameMode, description: string }[] = [
     { mode: GameMode.LoveBirds, description: "For established couples" },
     { mode: GameMode.GroupMode, description: "Spicy, humorous & open-ended" },
 ];
+
+// Enhanced configuration constants
+export const TOPIC_KEYWORDS: Record<RequestTopic, string[]> = {
+  [RequestTopic.Love]: ['love', 'relationship', 'partner', 'dating', 'romance', 'crush'],
+  [RequestTopic.Career]: ['work', 'job', 'career', 'ambition', 'goal', 'professional'],
+  [RequestTopic.Family]: ['family', 'parent', 'sibling', 'childhood', 'home'],
+  [RequestTopic.Dreams]: ['dream', 'aspiration', 'hope', 'future', 'wish'],
+  [RequestTopic.Fears]: ['fear', 'scary', 'afraid', 'insecurity', 'worry'],
+  [RequestTopic.Fun]: ['fun', 'hobby', 'entertainment', 'enjoy', 'favorite'],
+  [RequestTopic.Deep]: ['meaning', 'purpose', 'believe', 'value', 'philosophy'],
+  [RequestTopic.Secrets]: ['secret', 'never told', 'confession', 'hidden']
+};
+
+export const TOPIC_EMOJIS: Record<RequestTopic, string> = {
+  [RequestTopic.Love]: '💕',
+  [RequestTopic.Career]: '💼', 
+  [RequestTopic.Family]: '👨‍👩‍👧‍👦',
+  [RequestTopic.Dreams]: '✨',
+  [RequestTopic.Fears]: '😰',
+  [RequestTopic.Fun]: '🎉',
+  [RequestTopic.Deep]: '🤔',
+  [RequestTopic.Secrets]: '🤫'
+};
+
+export const HOT_SEAT_CONFIG = {
+  DEFAULT_TIME_LIMIT: 30,
+  MIN_QUESTIONS: 5,
+  MAX_QUESTIONS: 15,
+  RAPID_FIRE_DELAY: 2000
+};
+
+export const ENERGY_CONFIG = {
+  UPDATE_INTERVAL: 30000,
+  FACTORS: {
+    TIME_OF_DAY_WEIGHT: 0.2,
+    SESSION_LENGTH_WEIGHT: 0.3,
+    INTERACTION_RATE_WEIGHT: 0.3,
+    ENGAGEMENT_WEIGHT: 0.2
+  },
+  THRESHOLDS: {
+    LOW_ENERGY: 3,
+    MEDIUM_ENERGY: 6,
+    HIGH_ENERGY: 8
+  }
+};
+
+export const ENERGY_QUESTION_MAPPING = {
+  LOW: { maxIntimacy: 4, preferredMoods: [SessionMood.Chill] },
+  MEDIUM: { maxIntimacy: 7, preferredMoods: [SessionMood.Chill, SessionMood.Deep] },
+  HIGH: { maxIntimacy: 10, preferredMoods: [SessionMood.Wild, SessionMood.Funny] }
+};
 
 export const QUESTIONS: Question[] = [
     // First Date
@@ -44,18 +95,19 @@ export const QUESTIONS: Question[] = [
     { text: "What’s more attractive to you: ambition or kindness?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "What food would immediately make you leave a date if I ordered it?", mode: GameMode.FirstDate, type: QuestionType.Question },
     { text: "If your life had background music, what song would be playing right now?", mode: GameMode.FirstDate, type: QuestionType.Question },
+    { text: "If you had to explain your type using only cartoon characters, who would you choose?", mode: GameMode.FirstDate, type: QuestionType.Question },
 
     // Second Date
     { text: "What's a deeply held dream you have?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What does your five year plan look like?", mode: GameMode.SecondDate, type: QuestionType.Question },
-    { text: "What were the major turning points in your life?", mode: GameMode.SecondDate, type: QuestionType.Question },
-    { text: "What do you think are my best qualities?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What were the major turning points in your life?", mode: GameMode.ThirdDate, type: QuestionType.Question },
+    { text: "What do you think are my best qualities?", mode: GameMode.LoveBirds, type: QuestionType.Question },
     { text: "What lie have you told yourself so much that you now believe it?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "Is there anyone you look up to? Who and why?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What's your biggest fear?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "How do you define success?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "Are you more like one of your parents? Which one?", mode: GameMode.SecondDate, type: QuestionType.Question },
-    { text: "What's something you wish I did more often?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What's something you wish I did more often?", mode: GameMode.LoveBirds, type: QuestionType.Question },
     { text: "What were you like as a student?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What's the craziest thing you've ever done and you would do again?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What would you tell yourself if you could go back ten years ago?", mode: GameMode.SecondDate, type: QuestionType.Question },
@@ -66,12 +118,18 @@ export const QUESTIONS: Question[] = [
     { text: "Tell a story of how a stranger changed your life.", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "Which personal accomplishment are you most proud of? Why?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "What charity or social issue is most important to you? Why?", mode: GameMode.SecondDate, type: QuestionType.Question },
-    { text: "What you really need to understand about me and sex is…", mode: GameMode.SecondDate, type: QuestionType.Question },
-    { text: "What part of your body do you worry turns me off?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What part of your body do you worry turns me off?", mode: GameMode.LoveBirds, type: QuestionType.Question },
     { text: "What kind of power dynamics excite you?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "How do you hope your life will change in the next three years?", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "List five items on your bucket list.", mode: GameMode.SecondDate, type: QuestionType.Question },
     { text: "If you could wake up tomorrow having gained one skill to perfection, what would it be?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What's your most toxic trait that you've fully accepted?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What's something you low-key judge people for?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "Where would you go for your ideal honeymoon? What would the travel look like?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "If your younger self met you now, what would they be proud of?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What's something you wish more people asked you about?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "What's the most ridiculous thing you've done to impress someone you were attracted to?", mode: GameMode.SecondDate, type: QuestionType.Question },
+    { text: "If you could have your dream wedding next year, what would it look like?", mode: GameMode.SecondDate, type: QuestionType.Question },
 
     // Third Date
     { text: "When was the last time a scent reminded you of a childhood memory? Share that story with me.", mode: GameMode.ThirdDate, type: QuestionType.Question },
@@ -99,6 +157,7 @@ export const QUESTIONS: Question[] = [
     { text: "What's one of your secret sexual fantasies?", mode: GameMode.ThirdDate, type: QuestionType.Question },
     { text: "What is your most terrible memory?", mode: GameMode.ThirdDate, type: QuestionType.Question },
     { text: "What is your most cherished memory?", mode: GameMode.ThirdDate, type: QuestionType.Question },
+    { text: "If you could have your dream wedding next year, what would it look like?", mode: GameMode.ThirdDate, type: QuestionType.Question },
     
     // Love Birds
     { text: "What was the most recent experience that made you feel closer to me?", mode: GameMode.LoveBirds, type: QuestionType.Question },
@@ -134,43 +193,42 @@ export const QUESTIONS: Question[] = [
     { text: "What's one thing you'd like to get better at over the next year?", mode: GameMode.LoveBirds, type: QuestionType.Question },
     
     // Group Mode
-    { text: "If you could choose any city to live in for a year, where would it be and why?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "What's something you've always wanted to try but haven't yet?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "If you had to trade lives with someone in this room, who would it be and why?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "What's a secret you've never told anyone here?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "What's the most illegal thing you've ever done?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Who in this room would survive the longest in a zombie apocalypse?", mode: GameMode.GroupMode, type: QuestionType.Question },
-
-    // Newly added Friends Mode questions
-    { text: "What’s the most petty reason you’ve ever ghosted someone?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "You get one free slap - who and why?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "What’s a red flag you’re weirdly into?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "What would you never admit on your main instagram but lowkey want to share?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Who here would you trust to wingman you - and who absolutely not?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Who here would soft launch someone after one good date?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Who’s most likely to have a secret situationship no one knows about?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "If you could choose any city to live in for a year, where would it be and why?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Deep] },
+    { text: "What's something you've always wanted to try but haven't yet?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Deep] },
+    { text: "If you had to trade lives with someone in this room, who would it be and why?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "What's a secret you've never told anyone here?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep, SessionMood.Wild] },
+    { text: "What's the most illegal thing you've ever done?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Wild] },
+    { text: "Who in this room would survive the longest in a zombie apocalypse?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "What's your most toxic trait that you've fully accepted?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep, SessionMood.Wild] },
+    { text: "What's something you low-key judge people for?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep, SessionMood.Funny] },
+    { text: "What's the most petty reason you've ever ghosted someone?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "What's a red flag you're weirdly into?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Wild, SessionMood.Funny] },
+    { text: "What would you never admit on your main instagram but lowkey want to share?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Wild, SessionMood.Funny] },
+    { text: "Who here would you trust to wingman you - and who absolutely not?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "Who here would soft launch someone after one good date?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "Who’s most likely to have a secret situationship no one knows about?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Wild, SessionMood.Funny] },
  
     // Would You Rather Questions
-    { text: "Would you rather have the ability to read minds or be invisible?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather have your browser history made public or your bank account balance displayed above your head?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather only be able to whisper or only be able to shout for the rest of your life?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather fight one horse-sized duck or 100 duck-sized horses?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather know the date of your death or the cause of your death?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather have unlimited money but no close relationships, or amazing relationships but always struggle financially?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather always be 10 minutes late or 20 minutes early to everything?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Would you rather have to sing everything you say or dance everywhere you go?", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "Would you rather have the ability to read minds or be invisible?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Deep] },
+    { text: "Would you rather have your browser history made public or your bank account balance displayed above your head?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "Would you rather only be able to whisper or only be able to shout for the rest of your life?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "Would you rather fight one horse-sized duck or 100 duck-sized horses?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "Would you rather know the date of your death or the cause of your death?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep, SessionMood.Wild] },
+    { text: "Would you rather have unlimited money but no close relationships, or amazing relationships but always struggle financially?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep] },
+    { text: "Would you rather always be 10 minutes late or 20 minutes early to everything?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Funny] },
+    { text: "Would you rather have to sing everything you say or dance everywhere you go?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
     
     // Rating/Scaling Questions
-    { text: "On a scale of 1-10, how likely are you to survive a horror movie? Explain your strategy.", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Rate everyone in this room from 1-10 on who would make the best reality TV star. Explain why.", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "On a scale of 1-10, how much of a risk-taker are you? Give an example.", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Rate your cooking skills from 1-10. What's the most impressive dish you can make?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "On a scale of 1-10, how good are you at keeping secrets? Has anyone here tested this?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Rate your texting game from 1-10. Are you a quick replier or do you leave people on read?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "On a scale of 1-10, how competitive are you? What brings out your competitive side the most?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Rate your dance moves from 1-10. Show us your signature move!", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "On a scale of 1-10, how likely are you to eat something that fell on the floor? Does the 5-second rule apply?", mode: GameMode.GroupMode, type: QuestionType.Question },
-    { text: "Rate your ability to lie convincingly from 1-10. Tell us a lie right now and see if we can guess!", mode: GameMode.GroupMode, type: QuestionType.Question },
+    { text: "On a scale of 1-10, how likely are you to survive a horror movie? Explain your strategy.", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "Rate everyone in this room from 1-10 on who would make the best reality TV star. Explain why.", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "On a scale of 1-10, how much of a risk-taker are you? Give an example.", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Deep, SessionMood.Chill] },
+    { text: "Rate your cooking skills from 1-10. What's the most impressive dish you can make?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill] },
+    { text: "On a scale of 1-10, how good are you at keeping secrets? Has anyone here tested this?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny, SessionMood.Wild] },
+    { text: "Rate your texting game from 1-10. Are you a quick replier or do you leave people on read?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Funny] },
+    { text: "On a scale of 1-10, how competitive are you? What brings out your competitive side the most?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Chill, SessionMood.Deep] },
+    { text: "Rate your dance moves from 1-10. Show us your signature move!", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "On a scale of 1-10, how likely are you to eat something that fell on the floor? Does the 5-second rule apply?", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Funny] },
+    { text: "Rate your ability to lie convincingly from 1-10. Tell us a lie right now and see if we can guess!", mode: GameMode.GroupMode, type: QuestionType.Question, moodTags: [SessionMood.Wild, SessionMood.Funny] },
 ];
 
 export const WILDCARD_QUESTION: Question = {

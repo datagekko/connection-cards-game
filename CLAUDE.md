@@ -159,6 +159,31 @@ The app uses React hooks for state management:
 
 The project uses `@/*` aliases that resolve to the root directory for cleaner imports.
 
+## Styling & CSS
+
+### Tailwind CSS Setup
+
+The project uses **Tailwind CSS v3.4.0** (bundled, not CDN) for styling with the following configuration:
+
+- **CSS Entry Point**: `src/index.css` - Contains Tailwind directives and custom styles
+- **Config File**: `tailwind.config.js` - Tailwind configuration using CommonJS format
+- **PostCSS Config**: `postcss.config.js` - PostCSS configuration with Tailwind and Autoprefixer
+- **Build Integration**: Tailwind is bundled with Vite during build process
+
+### Custom Styles
+
+Custom CSS includes:
+- **Font Configuration**: Inter font family with font smoothing
+- **3D Card Animations**: CSS-only card flip animations for question cards
+- **Card Styling**: Custom `.card-container`, `.card-inner`, `.card-front`, `.card-back` classes
+
+### Important Notes
+
+- **Tailwind Version**: Must use v3.4.0 (not v4.x) due to content scanning issues with HTML body classes
+- **Content Scanning**: Tailwind scans `index.html`, all root-level files, `src/`, and `components/` directories
+- **Body Classes**: The `index.html` body tag uses `bg-gradient-to-br from-gray-900 to-black text-slate-100` for the dark gradient background
+- **Build Verification**: Always run `npm run build` after CSS changes to ensure proper bundling
+
 ## Troubleshooting
 
 ### Common Issues
@@ -167,6 +192,7 @@ The project uses `@/*` aliases that resolve to the root directory for cleaner im
 2. **Questions repeating**: Clear session via the stats panel or localStorage manually
 3. **Build errors**: Ensure all TypeScript types are correct in constants.ts
 4. **Missing API key**: Verify GEMINI_API_KEY is set in .env.local (development only)
+5. **Styling issues**: If colors/gradients aren't working, verify Tailwind v3.4.0 is installed and `npm run build` completes successfully
 
 ### Development Tips
 
