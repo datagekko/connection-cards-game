@@ -8,6 +8,22 @@ interface QuestionSession {
   startTime: number;
 }
 
+export interface SessionModeStat {
+  mode: GameMode;
+  total: number;
+  used: number;
+  remaining: number;
+}
+
+export interface SessionStatsSnapshot {
+  total: number;
+  used: number;
+  remaining: number;
+  sessionId: string;
+  startTime: number;
+  modeStats: SessionModeStat[];
+}
+
 const STORAGE_KEY = 'connection-cards-session';
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -77,16 +93,20 @@ export const useQuestionManager = () => {
   }, [session.usedQuestions]);
 
   const markQuestionAsUsed = useCallback((questionText: string) => {
+    const isKnownQuestion = QUESTIONS.some(q => q.text === questionText);
+    if (!isKnownQuestion) return;
+
     setSession(prev => ({
       ...prev,
       usedQuestions: new Set(prev.usedQuestions).add(questionText)
     }));
   }, []);
 
-  const getSessionStats = useCallback(() => {
+  const getSessionStats = useCallback((): SessionStatsSnapshot => {
     const totalQuestions = QUESTIONS.length;
-    const usedCount = session.usedQuestions.size;
-    const remainingCount = totalQuestions - usedCount;
+    const knownQuestionTexts = new Set(QUESTIONS.map(q => q.text));
+    const usedCount = Array.from(session.usedQuestions).filter(text => knownQuestionTexts.has(text)).length;
+    const remainingCount = Math.max(totalQuestions - usedCount, 0);
     
     const modeStats = Object.values(GameMode).map(mode => {
       const modeQuestions = QUESTIONS.filter(q => q.mode === mode);

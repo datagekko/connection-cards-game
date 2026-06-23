@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { GameMode, Question, Player } from './types';
+import { GameMode, Question, Player, QuestionType } from './types';
 import { WILDCARD_QUESTION, INITIAL_WILDCARDS } from './constants';
 import { useQuestionManager } from './hooks/useQuestionManager';
 import ModeSelectionScreen from './components/ModeSelectionScreen';
@@ -54,9 +54,10 @@ const App: React.FC = () => {
   }, [selectedMode, startGameWithPlayers]);
 
   const handleNextQuestion = useCallback(() => {
-    // Mark current question as used
+    // Mark answered prompts as used so they do not repeat during the 24-hour session.
+    // Wildcards are player-created and should not affect the question bank stats.
     const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion) {
+    if (currentQuestion?.type === QuestionType.Question) {
       questionManager.markQuestionAsUsed(currentQuestion.text);
     }
     
@@ -89,6 +90,9 @@ const App: React.FC = () => {
     setGameState('mode-selection');
     setSelectedMode(null);
     setQuestions([]);
+    setCurrentQuestionIndex(0);
+    setCurrentPlayerIndex(0);
+    setShowConfetti(false);
     setPlayers([{ id: 1, name: "Player 1" }, { id: 2, name: "Player 2" }]);
   }, []);
 
@@ -96,7 +100,13 @@ const App: React.FC = () => {
   const currentPlayer = players[currentPlayerIndex];
 
   if (gameState === 'mode-selection' || !selectedMode) {
-    return <ModeSelectionScreen onModeSelect={handleModeSelect} />;
+    return (
+      <ModeSelectionScreen
+        onModeSelect={handleModeSelect}
+        sessionStats={questionManager.getSessionStats()}
+        onClearSession={questionManager.clearSession}
+      />
+    );
   }
 
   if (gameState === 'player-setup') {
@@ -108,7 +118,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full min-h-screen overflow-x-hidden">
       {showConfetti && <Confetti />}
       <GameScreen
         key={selectedMode}
@@ -117,6 +127,8 @@ const App: React.FC = () => {
         currentPlayer={currentPlayer}
         players={players}
         wildcardCounts={wildcardCounts}
+        currentQuestionIndex={currentQuestionIndex}
+        totalQuestions={questions.length}
         onNextQuestion={handleNextQuestion}
         onUseWildcard={handleUseWildcard}
         onReset={resetGame}
