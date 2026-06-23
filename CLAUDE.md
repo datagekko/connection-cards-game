@@ -104,6 +104,31 @@ When adding questions to the question bank:
 - **Avoid duplicates**: Check existing questions before adding new ones
 - **Consider flow**: Think about question progression and user experience
 
+### Question Curation Workflow & Preferences
+
+When updating the question bank:
+1. Extract all source questions first.
+2. Sort them into First Date, Second Date, Third Date, Love Birds, or Group Mode.
+3. Compare candidates against existing questions before implementation.
+4. Flag strong and moderate overlaps.
+5. Present a final approval overview before editing `constants.ts`.
+6. Only implement after explicit approval.
+
+Use Playwright/browser automation for Instagram carousel posts when source questions are in images.
+
+Category tone:
+- First Date: light, funny, safe, with only a few deeper-but-gentle prompts.
+- Second Date: reflective, values-based, future-oriented, not too intense.
+- Third Date: deeper vulnerability and self-awareness.
+- Love Birds: established-couple reflection, shared memories, routines, support, and future.
+- Group Mode: funny, social, chaotic, friend-group appropriate.
+
+Question style preferences:
+- Prefer inclusive, gender-neutral wording.
+- Avoid pickup-artist or gendered framing.
+- Rephrase harsh social-media wording when needed.
+- Avoid redundant questions unless the user explicitly wants both.
+
 ## Architecture Overview
 
 This is a React-based connection card game built with TypeScript and Vite. The application helps couples and groups build connections through conversation prompts.
@@ -173,3 +198,11 @@ The project uses `@/*` aliases that resolve to the root directory for cleaner im
 - **Testing question changes**: Clear localStorage to reset session and test new questions
 - **Debugging session state**: Use browser dev tools to inspect localStorage key `connection-cards-session`
 - **Question count verification**: Check SessionStats component for accurate question counts per mode
+
+## UI / Animation Guidelines
+
+- For interaction and animation issues, first analyze the current implementation and explain the root cause before editing.
+- Prefer smooth, physically consistent motion over simple state toggles.
+- For card flip animations, avoid boolean back-and-forth toggles if the desired motion is a continuous 180° flip. Use numeric rotation values such as `0 → 180 → 360 → 540` and swap content when the card is edge-on.
+- When changing animations, inspect both CSS transitions and React state/timer logic together.
+- Validate with `npm run build`; mention clearly whether the change was visually tested in browser.
