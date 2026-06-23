@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Connection Cards">
+  <defs>
+    <!-- Signature pink -> purple card gradient -->
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff5fa2"/>
+      <stop offset="0.5" stop-color="#ec4899"/>
+      <stop offset="1" stop-color="#9333ea"/>
+    </linearGradient>
+    <!-- Top-left light sheen for a glassy, premium feel -->
+    <radialGradient id="sheen" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Dark base revealed through the die-cut heart -->
+    <linearGradient id="cut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1430"/>
+      <stop offset="1" stop-color="#07060e"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDev="1.1"/>
+    </filter>
+  </defs>
+
+  <!-- Card tile -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#card)"/>
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#sheen)"/>
+  <!-- Subtle card edge -->
+  <rect x="10" y="10" width="492" height="492" rx="104" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="3"/>
+
+  <!-- Die-cut heart with a soft glowing edge -->
+  <g transform="translate(144,142) scale(7)">
+    <path filter="url(#glow)" fill="none" stroke="#ffe3f1" stroke-opacity="0.85" stroke-width="2.2"
+      d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-8.8,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+    <path fill="url(#cut)"
+      d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-8.8,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="0.5"
+      d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-8.8,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+  </g>
+</svg>
