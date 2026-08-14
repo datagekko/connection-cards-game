@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/frog/schema.json",
+  "repo": "datagekko/connection-cards-game",
+  "inbound": {
+    "enabled": false
+  },
+  "outbound": {
+    "enabled": false
+  },
+  "labels": [
+    "friction"
+  ],
+  "maxPerRun": 10
+}
